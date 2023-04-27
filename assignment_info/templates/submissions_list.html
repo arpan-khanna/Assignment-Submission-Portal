@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Assignments submitted</h1>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Course code</th>
+        <th scope="col">course name</th>
+        <th scope="col">deadline</th>
+        <th scope="col">        </th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for c in course_list %}
+        <tr>
+        <td>{{ c.code }}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.deadline_date }} | {{ c.deadline_time}}</td>
+        <td><a href="{% url 'assignments:assignment_list' pk=c.pk %}" class='btn btn-primary' >view submissions </a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
