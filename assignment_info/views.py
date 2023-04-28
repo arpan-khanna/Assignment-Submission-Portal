@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import SubmissionForm,CourseForm,CreateCourseForm,RegisterForm
+from .forms import SubmissionForm,CourseForm,CreateCourseForm,RegisterForm,GradingForm
 from django.contrib.auth import get_user_model
 from .models import Course,Submissions,Cname,RegUsers
 from django.contrib.auth.decorators import login_required
@@ -13,6 +13,7 @@ from django.core.exceptions import PermissionDenied
 from datetime import date
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
 
     
 @login_required
@@ -79,46 +80,70 @@ def RegisterFormView(request,pk=None):
         'wrong_key':wrong_key
     })
 
-
+@login_required
 def CourseView(request):
-    created=False
-    if request.method=='POST':
-        course_form=CourseForm(request.POST,request.FILES)
-        if course_form.is_valid():
-            form=course_form.save(commit=False)
-            if 'question_file' in request.FILES:
-                form.question_file=request.FILES['question_file']
-            form.save()
-            created=True
-            send_mail('Subject here', 'Assignment has been created', 'submissionPortalProject@gmail.com',['arpankhanna70@gmail.com'], fail_silently=False)
-            # form.deadline_date=form.d_date
-        else:
-            print(course_form.errors)
-    else:
-        course_form=CourseForm()
-    return render(request,'course_form.html',context={
-        'form':course_form,
-        'created':created
-    })
+    if request.user.is_superuser:
+        created=False
+        if request.method=='POST':
+            course_form=CourseForm(request.user,request.POST,request.FILES)
+            if course_form.is_valid():
+                form=course_form.save(commit=False)
+                if 'question_file' in request.FILES:
+                    form.question_file=request.FILES['question_file']
+                form.save()
+                created=True
+                sub_str = form.code.code + ' ' + form.name
+                content_str = 'An assignment has been created for ' + form.code.code + 'course.\n' + 'Details:\nAssignment name: ' + form.name + '\n'  + 'Assignment deadline: ' + str(form.deadline_date) + ' , ' + str(form.deadline_time) + '\n'
 
+
+                # get the email id of all registered users
+                reg_users = RegUsers.objects.filter(course=form.code)
+                email_str = []
+                for user in reg_users:
+                    email_str.append(user.user.email)
+                # print(email_str)
+                send_mail(sub_str, content_str, 'submissionPortalProject@gmail.com',email_str, fail_silently=False)
+                # form.deadline_date=form.d_date
+            else:
+                print(course_form.errors)
+        else:
+            course_form=CourseForm(request.user)
+        return render(request,'course_form.html',context={
+            'form':course_form,
+            'created':created
+        })
+    else:
+        raise PermissionDenied()
+
+@login_required
 def CreateCourseView(request):
-    created=False
-    if request.method=='POST':
-        course_form=CreateCourseForm(request.POST,request.FILES)
-        if course_form.is_valid():
-            form=course_form.save(commit=False)
-            form.save()
-            created=True
-            # form.deadline_date=form.d_date
+    if request.user.is_superuser:
+        created=False
+        course_code = 'Code ***'
+        if request.method=='POST':
+            course_form=CreateCourseForm(request.POST,request.FILES)
+            if course_form.is_valid():
+                form=course_form.save(commit=False)
+                form.save()
+                created=True
+                course_code = form.code
+                # form.deadline_date=form.d_date
+                # insert an entry in Reg Users table
+                reg_user = RegUsers(user=request.user, course=form)
+                reg_user.save()
+            else:
+                print(course_form.errors)
         else:
-            print(course_form.errors)
+            course_form=CreateCourseForm()
+        return render(request,'create_course.html',context={
+            'form':course_form,
+            'created':created,
+            'course_code': course_code
+        })
     else:
-        course_form=CreateCourseForm()
-    return render(request,'create_course.html',context={
-        'form':course_form,
-        'created':created
-    })
-
+        raise PermissionDenied()
+    
+@login_required
 def AssigmentList(request):
     course_list=Course.objects.all()
     temp = RegUsers.objects.filter(user=request.user)
@@ -138,6 +163,7 @@ def AssigmentList(request):
        
     return render(request,'course_list.html',context={'course_list':final_list})
 
+@login_required
 def Assignments_list(request,pk):
     if(request.user.is_superuser):
         if(request.method == 'POST'):
@@ -167,25 +193,63 @@ class SubmissionListView(SuperUserRequiredMixin,ListView):
     template_name='submissions_list.html'
     fields='__all__'
 
+# def GradingPage(request,pk):
+#     sub = get_object_or_404(Submissions,pk=pk)
+#     return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
+@login_required
 def GradingPage(request,pk):
-    sub = get_object_or_404(Submissions,pk=pk)
-    return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
+    if(request.user.is_superuser):
+        sub = get_object_or_404(Submissions,pk=pk)
+        created=False
+        if request.method=="POST":
+            sub_form = GradingForm(request.POST or None, request.FILES or None)
+            if sub_form.is_valid():
+                form=sub_form.save(commit=False)
+                sub.checked_by=request.user.username
+                sub.grade=form.grade
+                sub.feedback=form.feedback
+                sub.save()
+                created=True
 
-def AfterGrading(request,pk):
-    sub = get_object_or_404(Submissions,pk=pk)
-    course=get_object_or_404(Course,pk=sub.course.pk)
-    if request.method=='POST':
-        sub.grade=request.POST.get('grade')
-        sub.save()
-        return render(request,'assigments_list.html',context={'course':course})
+                sub_str = sub.course.code.code + ' ' + sub.course.name + ' ' + 'grades'
+                body_str = 'Your assignment for ' + sub.course.code.code + ' ' + sub.course.name + ' has been graded.\n' +'Grade: ' + str(sub.grade) + '\n' + 'Feedback: ' + sub.feedback + '\n' + 'Checked by: ' + sub.checked_by + '\n'
+
+                email_id  = []
+                email_id.append(sub.user.email)
+
+                send_mail(sub_str, body_str, 'submissionPortalProject@gmail.com',email_id, fail_silently=False)
+                # if 'answer' in request.FILES:
+                # form.save()
+                # print(form.user + " " + form.checked_by + " " + form.grade + " " + form.course + " " + form.feedback) 
+        else:
+            sub_form=GradingForm()
+
+        return render(request,template_name='grading_page.html',context={
+            'form':sub_form,
+            'submission':sub,
+            'created':created
+
+        })
     else:
-        return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
+        raise PermissionDenied()
 
+# def AfterGrading(request,pk):
+#     sub = get_object_or_404(Submissions,pk=pk)
+#     course=get_object_or_404(Course,pk=sub.course.pk)
+#     if request.method=='POST':
+#         sub.grade=request.POST.get('grade')
+#         sub.save()
+#         return render(request,'assigments_list.html',context={'course':course})
+#     else:
+#         return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
+
+@login_required
 def deletingAssign(request,pk):
     course=get_object_or_404(Course,pk=pk)
     course.delete()
     return render(request,'deleteassign.html')
 
+@login_required
 def AvailableListView(request):
     course_list = Cname.objects.all()
 
@@ -196,3 +260,11 @@ def AvailableListView(request):
 
     print(c_registerd)
     return render(request,'available_course.html',context={'course_list':course_list,'c_registerd':c_registerd})
+
+@login_required
+def DeregisterCourse(request,pk):
+    course_code = Cname.objects.filter(pk = pk)
+    course = RegUsers.objects.filter(user = request.user,course = course_code[0])
+    course.delete()
+    return render(request,'deregister.html',context={'course_code':course_code[0]})
+

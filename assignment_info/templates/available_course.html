@@ -16,7 +16,7 @@
         <tr>
           <td>{{ c.code }}</td>
           <td>{{ c.course_name }}</td>
-          <td><a href="#" class='btn btn-danger' >Already Registered </a></td>
+          <td><a href="{% url 'assignments:deregister_course' pk=c.pk %}" class='btn btn-danger' >Deregister </a></td>
           </tr>
         {% else %}
         <tr>
