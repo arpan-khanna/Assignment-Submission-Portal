@@ -7,7 +7,8 @@
 {% else %}
 
 {% if submitted %}
-        <h2>You have successfully registerd your course</h2>
+        <h2>You have successfully registered your course </h2><br>
+        <a href="{% url 'assignments:list' %}" class="btn btn-primary">Go back to the assignments list page</a>
       {% else %}
         <form enctype="multipart/form-data" method="post">
           {% csrf_token %}

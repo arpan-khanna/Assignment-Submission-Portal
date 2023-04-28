@@ -49,10 +49,10 @@
       </div>
   {%endif%}
   {% else %}
-      <h1>You can't submit {{course.name }} assignment anymore.</h1>
+      <br><h1>You can't submit {{course.name }} assignment anymore.</h1><br>
     {% endif %}
   {% else %}
-    <h1>You can't submit {{course.name }} assignment anymore.</h1>
+    <br><h1>You can't submit {{course.name }} assignment anymore.</h1><br>
   {% endif %}
 {% endif %}
 
@@ -76,6 +76,8 @@
             <p>Not Graded Yet</p>
           {% else %}
             <p>Grade: {{i.grade}}</p>
+            <p>Feedback: {{i.feedback}}</p>
+            <p>Checked by: {{i.checked_by}}</p>
           {% endif %}
         {% endif %}
       {% endfor %}

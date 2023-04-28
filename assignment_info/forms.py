@@ -1,5 +1,12 @@
 from django import forms
 from .models import Submissions,Course,Cname,RegUsers
+# import self as self
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+
+
 
 class CreateCourseForm(forms.ModelForm):
     code=forms.CharField(max_length=10)
@@ -24,6 +31,19 @@ class CourseForm(forms.ModelForm):
         model=Course
         fields=('name','code','question','deadline_date','deadline_time','question_file')
 
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(CourseForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date1 = RegUsers.objects.filter(course=cleaned_data['code'],user=self.user).exists()
+        x = 0
+        print(date1)
+        if date1 == False:
+            raise forms.ValidationError('User cannot create assignment for this course. First register for the course.')
+        return cleaned_data
+
 class SubmissionForm(forms.ModelForm):
     class Meta():
         fields=('answer',)
@@ -39,3 +59,16 @@ class RegisterForm(forms.ModelForm):
     class Meta():
         fields=()
         model=RegUsers
+
+class GradingForm(forms.ModelForm):
+    feedback=forms.CharField(widget=forms.Textarea)
+    grade=forms.IntegerField()
+    class Meta():
+        fields=('grade','feedback')
+        model=Submissions
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data['grade'] > 10 or cleaned_data['grade'] < 0:
+            raise forms.ValidationError('Grade should be between 0 and 10.')
+        return cleaned_data

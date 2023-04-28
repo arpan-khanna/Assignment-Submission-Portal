@@ -4,9 +4,9 @@
   {% if created %}
   <br>
   <h2>Assignment has been created</h2><br>
-  <a href="{% url 'assignments:list' %}" class="btn btn-primary">Go back to the course page</a>
+  <a href="{% url 'assignments:list' %}" class="btn btn-primary">Go back to the assignments list page</a>
   {% else %}
-  <h2>Create an assignment</h2>
+  <br><h2>Create an assignment</h2><br>
   <form class="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {% bootstrap_form form %}

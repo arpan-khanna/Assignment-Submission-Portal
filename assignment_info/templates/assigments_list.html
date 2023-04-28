@@ -4,14 +4,14 @@
 
 {% now "Y-m-d" as todays_date %}
 {% if todays_date > course.deadline_date|date:"Y-m-d" %}
-<h1 class='display 4'>{{ course.name }}</h1>
+<br><h1 class='display 4'>{{ course.name }}</h1><br>
 <table class="table">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">student Id</th>
+        <th scope="col">Student Id</th>
         <th scope="col">Name</th>
-        <th scope="col">submitted at</th>
-        <th scope="col">file </th>
+        <th scope="col">Submitted at</th>
+        <th scope="col">File </th>
         <th scope="col">Grade </th>
       </tr>
     </thead>
@@ -40,14 +40,14 @@
 {% now "H:i" as todays_time %}
 {% if todays_time > course.deadline_time|date:"H:i" %}
 
-<h1 class='display 4'>{{ course.name }}</h1>
+<br><h1 class='display 4'>{{ course.name }}</h1><br>
 <table class="table">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">student Id</th>
+        <th scope="col">Student Id</th>
         <th scope="col">Name</th>
-        <th scope="col">submitted at</th>
-        <th scope="col">file </th>
+        <th scope="col">Submitted At</th>
+        <th scope="col">File </th>
         <th scope="col">Grade </th>
       </tr>
     </thead>
