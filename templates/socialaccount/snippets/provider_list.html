@@ -15,14 +15,17 @@
 {% endfor %}
 {% endif %}
 <div class="my-2">
-  <br><br><a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}" 
-     href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+  <br><br>
+  <form action="{% provider_login_url provider.id %}" method="post"> 
+    {% csrf_token %}
+    <button type="submit" style="padding:0; border:0">
      <img 
       src="
      {% with 'images/'|add:provider.name|add:'.png' as image %}
       {% static image %}
      {% endwith %}
      " alt="{{ provider.name }}" height="60" width="315"/>
-     </a>
+    </button>
+  </form>
 </div>
 {% endfor %}
