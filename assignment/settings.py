@@ -24,7 +24,7 @@ SECRET_KEY = '@t4c&*ecjb+r%rnzgx@$a+&5ss#v4=kt@yzlz-qs3hjd&%o&=1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.microsoft',
     'crispy_forms',
+    'sslserver'
 ]
 
 AUTHENTICATION_BACKENDS = [
