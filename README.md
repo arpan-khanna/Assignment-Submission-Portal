@@ -17,7 +17,7 @@ To use the portal, follow these steps:
 
 Alternatively if you want to access the portal over the intranet then run the server as follows:
 * python manage.py runsslserver 0.0.0.0:8000
-* Access the portal in your web browser at https://<your-ip-address>:8000/
+* Access the portal in your web browser at https://your-ip-address:8000/
 * Mske sure to change the callback url in Azure according to your ip address.
 
 Also it is safe to install a virtual environment and then install the dependencies in it.
