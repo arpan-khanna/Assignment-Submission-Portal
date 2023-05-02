@@ -67,6 +67,8 @@ def RegisterFormView(request,pk=None):
                 # if 'answer' in request.FILES:
                 form.save()
                 submitted=True
+
+                return redirect('assignments:available')
             else:
                 # sub_form=RegisterForm()
                 wrong_key = 1
@@ -86,7 +88,8 @@ def CourseView(request):
     if request.user.is_superuser:
         created=False
         if request.method=='POST':
-            course_form=CourseForm(request.user,request.POST,request.FILES)
+            course_form=CourseForm(request.user, request.POST, request.FILES)
+
             if course_form.is_valid():
                 form=course_form.save(commit=False)
                 if 'question_file' in request.FILES:
@@ -160,7 +163,7 @@ def AssigmentList(request):
                 final_list.append(i)
                 break
        
-    return render(request,'course_list.html',context={'course_list':final_list})
+    return render(request, 'course_list.html', context={'course_list':final_list})
 
 @login_required
 def Assignments_list(request,pk):
@@ -178,23 +181,20 @@ def Assignments_list(request,pk):
             course=get_object_or_404(Course,pk=pk)
             return render(request,'assigments_list.html',context={'course':course})
     else:
-        # permission_denied(request)
-        # return render(request,'permission_denied.html')
         raise PermissionDenied()
 
 class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-
     def test_func(self):
         return self.request.user.is_superuser
 
-class SubmissionListView(SuperUserRequiredMixin,ListView):
-    model=Course
-    template_name='submissions_list.html'
-    fields='__all__'
 
-# def GradingPage(request,pk):
-#     sub = get_object_or_404(Submissions,pk=pk)
-#     return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
+def SubmissionListView(request):
+    registered_courses = [reg.course for reg in RegUsers.objects.filter(user=request.user)]
+    context = {'course_list': [course for course in Course.objects.all() if course.code in registered_courses]}
+
+    return render(request, 'submissions_list.html', context=context)
+
+
 @login_required
 def GradingPage(request,pk):
     if(request.user.is_superuser):
@@ -258,5 +258,5 @@ def DeregisterCourse(request,pk):
     course_code = Cname.objects.filter(pk = pk)
     course = RegUsers.objects.filter(user = request.user,course = course_code[0])
     course.delete()
-    return render(request,'deregister.html',context={'course_code':course_code[0]})
+    return redirect('assignments:available')
 

@@ -12,11 +12,11 @@ urlpatterns=[
     path('register_course/<int:pk>/', views.RegisterFormView,name='register_course'),
     path('create_assignment/', views.CourseView, name='create'),
     path('create_course/', views.CreateCourseView, name='create_course'),
-    path('submissions/',views.SubmissionListView.as_view(),name='submission'),
+    path('submissions/',views.SubmissionListView,name='submission'),
     path('assignment/<int:pk>/',views.Assignments_list,name='assignment_list'),
     path('assignment/<int:pk>/delete/',views.deletingAssign,name='deleteassign'),
     path('available_courses/',views.AvailableListView,name='available'),
-    path('course/deregister/<int:pk>/',views.DeregisterCourse,name='deregister_course'),
+    path('deregister/<int:pk>/',views.DeregisterCourse,name='deregister_course'),
 
 ]
 

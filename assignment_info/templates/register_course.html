@@ -3,21 +3,16 @@
 {% block content %}
 <br>
 {% if wrong_key %}
-<h3>Wrong Key Entered</h3>
-{% else %}
+<h3> Wrong key entered.</h3>
+{% endif %}
 
-{% if submitted %}
-        <h3>You have successfully registered your course </h3><br>
-        <a href="{% url 'assignments:list' %}" class="btn btn-primary">Go back to the assignments list page</a>
-      {% else %}
-        <h3>Register for the course {{course.code}}</h3>
-        <br>
-        <form enctype="multipart/form-data" method="post">
-          {% csrf_token %}
-          {% bootstrap_form form %}
-          <br>
-          <input type="submit" name="" value="Submit" class='btn btn-primary'>
-        </form>
-{%endif%}
-{%endif%}
+<h3>Register for the course {{course.code}}</h3>
+<br>
+<form enctype="multipart/form-data" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <br>
+  <input type="submit" name="" value="Submit" class='btn btn-primary'>
+</form>
+
 {% endblock %}

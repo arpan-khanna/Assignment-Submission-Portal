@@ -22,7 +22,7 @@ class CourseForm(forms.ModelForm):
     name=forms.CharField(max_length=100)
     # code=forms.CharField(max_length=100)
     code = forms.ModelChoiceField(queryset=Cname.objects.all())
-    question=forms.CharField(widget=forms.Textarea)
+    question=forms.CharField(widget=forms.Textarea, required=False)
     question_file=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     deadline_date=forms.DateField(widget=forms.SelectDateWidget)
     deadline_time=forms.TimeField()
@@ -38,7 +38,7 @@ class CourseForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        date1 = RegUsers.objects.filter(course=cleaned_data['code'],user=self.user).exists()
+        date1 = RegUsers.objects.filter(course=cleaned_data['code'], user=self.user).exists()
         x = 0
         print(date1)
         if date1 == False:
