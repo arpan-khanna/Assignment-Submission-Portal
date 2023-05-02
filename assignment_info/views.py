@@ -14,6 +14,7 @@ from datetime import date
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import redirect
 
     
 @login_required
@@ -127,8 +128,6 @@ def CreateCourseView(request):
                 form.save()
                 created=True
                 course_code = form.code
-                # form.deadline_date=form.d_date
-                # insert an entry in Reg Users table
                 reg_user = RegUsers(user=request.user, course=form)
                 reg_user.save()
             else:
@@ -202,7 +201,7 @@ def GradingPage(request,pk):
         sub = get_object_or_404(Submissions,pk=pk)
         created=False
         if request.method=="POST":
-            sub_form = GradingForm(request.POST or None, request.FILES or None)
+            sub_form = GradingForm(request.POST or None, request.FILES or None, instance=sub)
             if sub_form.is_valid():
                 form=sub_form.save(commit=False)
                 sub.checked_by=request.user.username
@@ -218,30 +217,23 @@ def GradingPage(request,pk):
                 email_id.append(sub.user.email)
 
                 send_mail(sub_str, body_str, 'submissionPortalProject@gmail.com',email_id, fail_silently=False)
-                # if 'answer' in request.FILES:
-                # form.save()
-                # print(form.user + " " + form.checked_by + " " + form.grade + " " + form.course + " " + form.feedback) 
+                
+                return redirect('/course/assignment/' + str(sub.course.pk))
+
         else:
-            sub_form=GradingForm()
+            if (sub.grade >= 0):
+                sub_form=GradingForm(instance=sub)
+            else:
+                sub_form=GradingForm()
 
         return render(request,template_name='grading_page.html',context={
             'form':sub_form,
             'submission':sub,
             'created':created
-
         })
+
     else:
         raise PermissionDenied()
-
-# def AfterGrading(request,pk):
-#     sub = get_object_or_404(Submissions,pk=pk)
-#     course=get_object_or_404(Course,pk=sub.course.pk)
-#     if request.method=='POST':
-#         sub.grade=request.POST.get('grade')
-#         sub.save()
-#         return render(request,'assigments_list.html',context={'course':course})
-#     else:
-#         return render(request,'grading_page.html',context={'submission':sub,'pk':pk})
 
 @login_required
 def deletingAssign(request,pk):

@@ -6,11 +6,12 @@
   <h2>Course {{course_code}} has been created and the user has been automatically added to the course</h2><br>
   <a href="{% url 'index' %}" class="btn btn-primary">Go back to the home page</a>
   {% else %}
-  <h2>Create a course.</h2>
+  <br>
+  <h2>Create Course</h2>
   <form class="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" name="" value="create" class="btn btn-warning">
+    <input type="submit" name="" value="Create" class="btn btn-warning">
   </form>
   {% endif %}
 {% endblock %}

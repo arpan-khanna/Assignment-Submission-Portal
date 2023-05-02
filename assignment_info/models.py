@@ -28,6 +28,7 @@ class Course(models.Model):
     question_file=models.FileField(blank=True,null=True)
     deadline_date=models.DateField(null=True)
     deadline_time =models.TimeField(null=True)
+    max_marks=models.IntegerField(default=10)
 
     class Meta:
         constraints = [

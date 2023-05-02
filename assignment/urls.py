@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.IndexView.as_view(),name='index'),
-    path('course/',include('assignment_info.urls')),
+    path('course/',include(('assignment_info.urls', 'assignment_info'), namespace='assignment_info')),
     path('accounts/', include('allauth.urls')),
     # path('accounts/',include('accounts.urls')),
     # path('accounts/',include('django.contrib.auth.urls')),

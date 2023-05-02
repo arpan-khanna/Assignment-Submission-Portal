@@ -37,21 +37,17 @@ body > *:not(.navbar) {
     {% endif %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <span class="navbar-brand mb-0 h1"  style="font-size: 2em;"> <a class="navbar-brand" href="{% url 'index' %}">CS331</a></span>
+        <span class="navbar-brand mb-0 h1"  style="font-size: 2em;"> <a class="navbar-brand" href="{% url 'index' %}">Submissions Portal</a></span>
       <!-- <div class="container d-flex justify-content-between"> -->
         <ul class="nav justify-content-end">
           {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link active" href="{% url 'account_email' %}" style="color: white;">Change E-mail</a></li>
           <li class = "nav-item"><a class="nav-link active" href="{% url 'index' %}" style="color: white;">Home</a></li>
-          <div><a class="nav-link active" href="{% url 'account_logout' %}" style="color: white;">Sign Out</a></div></ul>
+          <div><a class="nav-link active" href="{% url 'account_logout' %}" style="color: white;">Logout</a></div></ul>
           {% else %}
           <ul class="nav justify-content-end">
             <li class="nav-item">
-          <a class="nav-link active" href="{% url 'account_login' %}" style="color: white;">Sign In</a>
+            <a class="nav-link active" href="{% url 'account_login' %}" style="color: white;">Login</a>
             </li>
-            <li class="nav-item">
-          <a class="nav-link active" href="{% url 'account_signup' %}" style="color: white;">Sign Up</a>
-          </li>
           {% endif %}
         </ul>
       <!-- </div> -->

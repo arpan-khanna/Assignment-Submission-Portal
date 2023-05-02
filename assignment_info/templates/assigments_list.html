@@ -2,8 +2,6 @@
 
 {% block content %}
 
-{% now "Y-m-d" as todays_date %}
-{% if todays_date > course.deadline_date|date:"Y-m-d" %}
 <br><h1 class='display 4'>{{ course.name }}</h1><br>
 <table class="table">
     <thead class="thead-dark">
@@ -33,60 +31,4 @@
       {% endfor %}
     </tbody>
   </table>
-{% endif %}
-
-
-{% if todays_date == course.deadline_date|date:"Y-m-d" %}
-{% now "H:i" as todays_time %}
-{% if todays_time > course.deadline_time|date:"H:i" %}
-
-<br><h1 class='display 4'>{{ course.name }}</h1><br>
-<table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Student Id</th>
-        <th scope="col">Name</th>
-        <th scope="col">Submitted At</th>
-        <th scope="col">File </th>
-        <th scope="col">Grade </th>
-      </tr>
-    </thead>
-    <tbody>
-        {% for i in course.submission.all %}
-      <tr>
-        <th scope="row">{{i.user.username}}</th>
-        <td>{{ i.user.first_name}} {{ i.user.last_name}}</td>
-        <td>{{i.submitted_at}}</td>
-        <td><a href='{{i.answer.url }}' class='btn btn-danger'download>Download</a></td>
-
-        {% if i.grade == -1 %}
-        <td><a href="{% url 'assignments:grading_page' pk=i.pk %}"> Grade Now</a></td>
-        {% else %}
-        <td><a href="{% url 'assignments:grading_page' pk=i.pk %}" style = 'color:red'> {{ i.grade }} </a></td>
-        {% endif %}
-        
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-{% endif %}
-{% endif %}
-
-{% if todays_date < course.deadline_date|date:"Y-m-d" %}
-<br><br>
-<h4> You cannot view the submissions yet as the submission time is not end. View the submission after {{course.deadline_date}} , {{course.deadline_time}}</h4>
-{% endif %}
-
-{% if todays_date == course.deadline_date|date:"Y-m-d" %}
-{% now "H:i" as todays_time %}
-{% if todays_time < course.deadline_time|date:"H:i" %}
-<br><br>
-<h4> You cannot view the submissions yet as the submission time is not end . View the submission after {{course.deadline_date}} , {{course.deadline_time}}</h4>
-{% endif %}
-
-
-
-{% endif %}
-  
 {% endblock %}

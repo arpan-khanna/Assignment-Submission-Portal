@@ -26,10 +26,11 @@ class CourseForm(forms.ModelForm):
     question_file=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     deadline_date=forms.DateField(widget=forms.SelectDateWidget)
     deadline_time=forms.TimeField()
+    max_marks=forms.IntegerField()
     
     class Meta():
         model=Course
-        fields=('name','code','question','deadline_date','deadline_time','question_file')
+        fields=('name','code','question','deadline_date','deadline_time','question_file', 'max_marks')
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -61,14 +62,18 @@ class RegisterForm(forms.ModelForm):
         model=RegUsers
 
 class GradingForm(forms.ModelForm):
-    feedback=forms.CharField(widget=forms.Textarea)
+    feedback=forms.CharField(widget=forms.Textarea, required=False)
     grade=forms.IntegerField()
+
     class Meta():
         fields=('grade','feedback')
         model=Submissions
 
     def clean(self):
         cleaned_data = super().clean()
-        if cleaned_data['grade'] > 10 or cleaned_data['grade'] < 0:
-            raise forms.ValidationError('Grade should be between 0 and 10.')
+
+        if (cleaned_data['grade'] > self.instance.course.max_marks) or (cleaned_data['grade'] < 0):
+            raise forms.ValidationError('Grade should be between 0 and %s.' % str(self.instance.course.max_marks))
         return cleaned_data
+
+

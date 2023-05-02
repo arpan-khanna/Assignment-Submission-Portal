@@ -6,11 +6,11 @@
   <h2>Assignment has been created</h2><br>
   <a href="{% url 'assignments:list' %}" class="btn btn-primary">Go back to the assignments list page</a>
   {% else %}
-  <br><h2>Create an assignment</h2><br>
+  <br><h2>Create Assignment</h2><br>
   <form class="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" name="" value="create" class="btn btn-warning">
+    <input type="submit" name="" value="Create" class="btn btn-warning">
   </form>
   {% endif %}
 {% endblock %}
