@@ -5,9 +5,30 @@ This is an assignment submission portal made using the Django framework. The por
 To use the assignment submission portal, you must have Python and Django installed on your machine.
 
 * Clone the repository: git clone https://github.com/arpan-khanna/Submission
-* Install the dependencies: pip install -r requirements.txt
+* Install the dependencies: pip install -r requirement.txt
+
+To use the sql database, run the following commands:
+* python manage.py makemigrations
+* python manage.py migrate
+
+To use the portal, follow these steps:
 * Run the server: python manage.py runserver
 * Access the portal in your web browser at http://localhost:8000/
+
+Alternatively if you want to access the portal over the intranet then run the server as follows:
+* python manage.py runsslserver 0.0.0.0:8000
+* Access the portal in your web browser at https://<your-ip-address>:8000/
+* Mske sure to change the callback url in Azure according to your ip address.
+
+Also it is safe to install a virtual environment and then install the dependencies in it.
+To use the virtual environment and install the dependencies run the following command:
+* pip install virtualenv
+* virtualenv venv
+* venv\Scripts\activate
+* pip install -r requirement.txt
+
+Note: The above commands are for Windows. For Linux and Mac OS, please refer to the official documentation.
+
 
 # Features
 The assignment submission portal has the following features:
@@ -18,7 +39,8 @@ The assignment submission portal has the following features:
 4. Submission Deadline: The portal has a feature for setting a submission deadline for each assignment. This allows students to submit their assignments before the deadline and prevents them from submitting assignments after the deadline.
 5. Grading and Feedback: After the submission deadline has passed, faculty members can access submitted assignments, grade them, and provide feedback to students. Students can also view their grades and feedback on the portal.
 6. Notifications: The portal has a notification feature that alerts students and faculty members of upcoming assignment deadlines, grades, and feedback.
-Contributing
+
+# Contributing
 
 To contribute to the assignment submission portal, follow these steps:
 

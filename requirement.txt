@@ -24,7 +24,7 @@ cryptography==39.0.2
 cymem==2.0.6
 defusedxml==0.7.1
 distlib==0.3.4
-Django==4.0.6
+django
 django-allauth==0.54.0
 django-auth-adfs==1.11.5
 django-bootstrap-form==3.4
@@ -99,3 +99,4 @@ vine==5.0.0
 wasabi==0.9.1
 wcwidth==0.2.6
 yarl==1.9.2
+django-sslserver
