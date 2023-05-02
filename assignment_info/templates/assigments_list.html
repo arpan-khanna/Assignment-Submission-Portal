@@ -6,7 +6,7 @@
 <table class="table">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">Student Id</th>
+        <th scope="col">Roll No.</th>
         <th scope="col">Name</th>
         <th scope="col">Submitted at</th>
         <th scope="col">File </th>
@@ -16,8 +16,8 @@
     <tbody>
         {% for i in course.submission.all %}
       <tr>
-        <th scope="row">{{i.user.username}}</th>
-        <td>{{ i.user.first_name}} {{ i.user.last_name}}</td>
+        <th scope="row">{{ i.user.last_name }}</th>
+        <td>{{ i.user.first_name}}</td>
         <td>{{i.submitted_at}}</td>
         <td><a href='{{i.answer.url }}' class='btn btn-danger'download>Download</a></td>
 
