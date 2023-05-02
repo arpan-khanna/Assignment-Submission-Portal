@@ -45,7 +45,7 @@ class Submissions(models.Model):
     course=models.ForeignKey(Course,on_delete=models.CASCADE,default=1,related_name='submission')
     answer=models.FileField(upload_to='assignments')
     submitted_at=models.DateTimeField(auto_now=True,blank=False)
-    grade=models.IntegerField(default=-1)
+    marks=models.IntegerField(default=-1)
     feedback=models.TextField(blank=True,default='No feedback')
     checked_by = models.CharField(max_length=30,blank=True,default='Not checked yet')
 

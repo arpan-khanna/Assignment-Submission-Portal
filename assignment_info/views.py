@@ -169,9 +169,9 @@ def Assignments_list(request,pk):
             # print("helo")
             sub = get_object_or_404(Submissions,pk=pk)
             course=get_object_or_404(Course,pk=sub.course.pk)
-            sub.grade=request.POST.get('gde')
+            sub.marks=request.POST.get('gde')
             sub.save()
-            send_mail('Subject here', 'Here is the message grade = ' + sub.grade, 'submissionPortalProject@gmail.com',['arpankhanna70@gmail.com'], fail_silently=False)
+            send_mail('Subject here', 'Here is the message marks = ' + sub.marks, 'submissionPortalProject@gmail.com',['arpankhanna70@gmail.com'], fail_silently=False)
             # print(request.POST.get('gde'))
             return render(request,'assigments_list.html',context={'course':course})
         else:
@@ -205,13 +205,13 @@ def GradingPage(request,pk):
             if sub_form.is_valid():
                 form=sub_form.save(commit=False)
                 sub.checked_by=request.user.username
-                sub.grade=form.grade
+                sub.marks=form.marks
                 sub.feedback=form.feedback
                 sub.save()
                 created=True
 
-                sub_str = sub.course.code.code + ' ' + sub.course.name + ' ' + 'grades'
-                body_str = 'Your assignment for ' + sub.course.code.code + ' ' + sub.course.name + ' has been graded.\n' +'Grade: ' + str(sub.grade) + '\n' + 'Feedback: ' + sub.feedback + '\n' + 'Checked by: ' + sub.checked_by + '\n'
+                sub_str = sub.course.code.code + ' ' + sub.course.name + ' ' + 'marks'
+                body_str = 'Your assignment for ' + sub.course.code.code + ' ' + sub.course.name + ' has been marked.\n' +'marks: ' + str(sub.marks) + '\n' + 'Feedback: ' + sub.feedback + '\n' + 'Checked by: ' + sub.checked_by + '\n'
 
                 email_id  = []
                 email_id.append(sub.user.email)
@@ -221,7 +221,7 @@ def GradingPage(request,pk):
                 return redirect('/course/assignment/' + str(sub.course.pk))
 
         else:
-            if (sub.grade >= 0):
+            if (sub.marks >= 0):
                 sub_form=GradingForm(instance=sub)
             else:
                 sub_form=GradingForm()

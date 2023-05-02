@@ -3,13 +3,14 @@
 {% block content %}
 {% if superuser == 0 %}
 {% if current_time.date < course.deadline_date %}
-    <h1>Submit Your Assignment</h1>            
+<br>
+    <h2>Submit Your Assignment</h2>   <br>         
       <div class="card">
         <div class="card-header">
-          <h3>{{ course.name }}</h3>
+          <h4>{{ course.name }}</h4>
         </div>
           <div class="card-body">
-            <p class="card-text">{{ course.question }}</p>
+            <p class="card-text">Question: <br>{{ course.question }}</p>
             <p>Attachments:<br><a href="{{course.question_file.url}}" download>{{course.question_file.name}}</a></p>
             <form enctype="multipart/form-data" method="post">
               {% csrf_token %}
@@ -26,7 +27,7 @@
   {% else %}
     <h1>Submit your assignment</h2>
       {% for i in course.submission.all %}
-        {% if i.user.username == user.get_username %}
+        {% if i.user.username == user.get _username %}
           <p>You have already submitted the assigment. If you wish to modify your submission, submit again.</p>
           <p>your submission ------> <a href="{{ i.answer.url }}" download >{{i.answer.name}}</a></p>
         {% endif %}
@@ -49,10 +50,10 @@
       </div>
   {%endif%}
   {% else %}
-      <br><h1>You can't submit {{course.name }} assignment anymore.</h1><br>
+      <br><h2>You can't submit {{course.name }} anymore</h2><br>
     {% endif %}
   {% else %}
-    <br><h1>You can't submit {{course.name }} assignment anymore.</h1><br>
+    <br><h2>You can't submit {{course.name }} anymore</h2><br>
   {% endif %}
 {% endif %}
 
@@ -72,10 +73,10 @@
 
       {% for i in course.submission.all %}
         {% if i.user.username == user.get_username %}
-          {%if i.grade == -1 %}
+          {%if i.marks == -1 %}
             <p>Not Graded Yet</p>
           {% else %}
-            <p>Grade: {{i.grade}}</p>
+            <p>Marks: {{i.marks}}</p>
             <p>Feedback: {{i.feedback}}</p>
             <p>Checked by: {{i.checked_by}}</p>
           {% endif %}

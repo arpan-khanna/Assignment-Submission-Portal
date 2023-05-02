@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<br><h1 class='display 4'>{{ course.name }}</h1><br>
+<br><h2 class='display 4'>{{ course.name }}</h2><br>
 <table class="table">
     <thead class="thead-dark">
       <tr>
@@ -10,7 +10,7 @@
         <th scope="col">Name</th>
         <th scope="col">Submitted at</th>
         <th scope="col">File </th>
-        <th scope="col">Grade </th>
+        <th scope="col">Marks </th>
       </tr>
     </thead>
     <tbody>
@@ -21,10 +21,10 @@
         <td>{{i.submitted_at}}</td>
         <td><a href='{{i.answer.url }}' class='btn btn-danger'download>Download</a></td>
 
-        {% if i.grade == -1 %}
+        {% if i.marks == -1 %}
         <td><a href="{% url 'assignments:grading_page' pk=i.pk %}"> Grade Now</a></td>
         {% else %}
-        <td><a href="{% url 'assignments:grading_page' pk=i.pk %}" style = 'color:red'> {{ i.grade }} </a></td>
+        <td><a href="{% url 'assignments:grading_page' pk=i.pk %}" style = 'color:red'> {{ i.marks }} </a></td>
         {% endif %}
         
       </tr>

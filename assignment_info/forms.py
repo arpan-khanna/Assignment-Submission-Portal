@@ -30,7 +30,7 @@ class CourseForm(forms.ModelForm):
     
     class Meta():
         model=Course
-        fields=('name','code','question','deadline_date','deadline_time','question_file', 'max_marks')
+        fields=('name','code','question','deadline_date','deadline_time','max_marks','question_file')
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -63,17 +63,17 @@ class RegisterForm(forms.ModelForm):
 
 class GradingForm(forms.ModelForm):
     feedback=forms.CharField(widget=forms.Textarea, required=False)
-    grade=forms.IntegerField()
+    marks=forms.IntegerField()
 
     class Meta():
-        fields=('grade','feedback')
+        fields=('marks','feedback')
         model=Submissions
 
     def clean(self):
         cleaned_data = super().clean()
 
-        if (cleaned_data['grade'] > self.instance.course.max_marks) or (cleaned_data['grade'] < 0):
-            raise forms.ValidationError('Grade should be between 0 and %s.' % str(self.instance.course.max_marks))
+        if (cleaned_data['marks'] > self.instance.course.max_marks) or (cleaned_data['marks'] < 0):
+            raise forms.ValidationError('Marks should be between 0 and %s.' % str(self.instance.course.max_marks))
         return cleaned_data
 
 
